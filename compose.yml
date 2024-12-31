@@ -1,0 +1,63 @@
+###########################
+# ローカル開発環境
+
+services:
+  ###########################
+  # app / webサーバー
+  # このブロック１つがサーバー（コンテナ）１つを表す
+  app:
+    container_name: weather_app    # コンテナ名、ブリッジ内で名前引きするので大事
+    build: docker/web             # ビルド時にDockerfileを参照する場合に指定
+    environment:
+      - APP_TIMEOUT=60
+      - PHP_MEMORY_LIMIT=256M
+      - PHP_MAX_UPLOAD=20M
+    working_dir: /var/www/html   # コンテナにログインした際の初期ディレクトリ
+    ports:
+      - "8080:80"   # localhost:8080への接続をこのサーバーの80ポートにフォワーディング
+      - "5173:5173"
+    networks:
+      - app_local   # 使用するネットワークブリッジ、設定は末尾
+    volumes:
+      - ./:/var/www/html   # このディレクトリをコンテナ内/var/www/html以下にマッピングする
+
+  ###########################
+  # db : mariadb 10.11.10
+  # DBサーバー
+  db:
+    container_name: db
+    image: mariadb:10.11.10    # webと異なり、imageから直接作成
+    ports:
+     - 3306:3306        # もしブリッジ外からDBへ接続したいなら設定が必要
+    environment:          # 立ち上がるDBのDB名やuser名、ローカルは適当で大丈夫
+      MYSQL_DATABASE: weather_app
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: root
+      TZ: 'Asia/Tokyo'
+    networks:
+      - app_local    # 使用するネットワークブリッジ、設定は末尾
+    volumes:               
+      - ./docker/db/data:/var/lib/mysql      # ホストボリュームを使用
+      - ./docker/db/conf.d:/etc/mysql/conf.d # 起動時の文字コード設定変更のため、参照confを変更
+
+  ###########################
+  # redis : Redis 7.4
+  # Redisサーバー
+  redis:
+    container_name: redis
+    image: redis:7.4    # webと異なり、imageから直接作成
+    #ports:
+    #  - "6379:6379"      # もしブリッジ外からRedisへ接続したいなら設定が必要
+    volumes:
+      - ./docker/redis/data:/data            # ホストボリュームを使用
+    networks:
+      - app_local      # 使用するネットワークブリッジ、設定は末尾
+
+networks: # コンテナを立ち上げるネットワークブリッジの設定
+  app_local:
+    driver: bridge
+    driver_opts:
+      com.docker.network.enable_ipv6: "false"
+
+# volumes: DBやRedisのデータ永続化のために利用する名前つきボリューム

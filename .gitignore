@@ -1,4 +1,5 @@
 /.phpunit.cache
+db/data/
 /node_modules
 /public/build
 /public/hot

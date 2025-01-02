@@ -3,11 +3,11 @@
 namespace App\Enums;
 
 enum City: string {
-  case Tokyo = 'tokyo';
-  case Osaka = 'osaka';
-  case Sapporo = 'sapporo';
-  case Fukuoka = 'fukuoka';
-  case Nagoya = 'nagoya';
+  case Tokyo = 'Tokyo';
+  case Osaka = 'Osaka';
+  case Sapporo = 'Sapporo';
+  case Fukuoka = 'uFkuoka';
+  case Nagoya = 'Nagoya';
 
   public function getCoordinates(): array
   {

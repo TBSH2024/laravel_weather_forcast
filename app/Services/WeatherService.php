@@ -11,7 +11,7 @@ class WeatherService
     [
       'latitude' => $latitude,
       'longitude' => $longitude,
-      'current' => 'temperature_2m,relative_humidity_2m',
+      'current' => 'temperature_2m,relative_humidity_2m,weather_code',
       'hourly' => 'temperature_2m,wind_speed_10m',
       'timezone' => 'Asia/Tokyo',
     ]);

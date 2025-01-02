@@ -25,7 +25,7 @@ RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
 
 # gitのインストール
 RUN apt-get update && apt-get install -y git \
-    && git config --global --add safe.directory /var/www/html
+    && git config --global --add safe.directory /var/www/html/src/
 
 # Apacheの設定ファイルを上書き
 # COPY apache-virtualhost.conf /etc/apache2/sites-available/000-default.conf

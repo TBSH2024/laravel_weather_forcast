@@ -21,6 +21,7 @@ class WeatherController extends Controller
 
         try {
             $city = City::from($cityName);
+            $kanjiCityName = $city->getKanjiName();
         } catch (\Exception $e) {
             return response()->json('error', $e->getMessage(), 500);
         }
@@ -28,13 +29,13 @@ class WeatherController extends Controller
 
         try {
             $weatherData = $this->weatherService->fetchWeatherData($cityLocation['latitude'], $cityLocation['longitude']);
-            // dd($weatherData);
         } catch(\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
 
         $cities = City::getAllCities();
+
         
-        return view('index', compact('city', 'weatherData', 'cities'));
+        return view('index', compact('city', 'kanjiCityName', 'weatherData', 'cities'));
     }
 }
